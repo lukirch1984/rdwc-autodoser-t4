@@ -12,6 +12,18 @@
 *.o
 *.a
 
+# MkDocs generated site
+site/
+
+# Dependency caches
+.cache/
+.pytest_cache/
+*.egg-info/
+
+# Python environment (if any used for docs tooling)
+venv/
+.venv/
+
 # System files
 .DS_Store
 Thumbs.db
