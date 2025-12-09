@@ -1,0 +1,113 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg" style="background-color:white">
+  <!-- Styles -->
+  <style>
+    text { font-family: Arial, sans-serif; font-size: 12px; fill: #333; }
+    .box { fill: #f0f0f0; stroke: #333; stroke-width: 2; }
+    .esp { fill: #d4edda; stroke: #155724; stroke-width: 2; }
+    .relay { fill: #f8d7da; stroke: #721c24; stroke-width: 2; }
+    .sensor { fill: #cce5ff; stroke: #004085; stroke-width: 2; }
+    .power { fill: #fff3cd; stroke: #856404; stroke-width: 2; }
+    .wire-pwr { stroke: #d9534f; stroke-width: 2; } /* 5V/12V Red */
+    .wire-gnd { stroke: #292b2c; stroke-width: 2; } /* GND Black */
+    .wire-sig { stroke: #5bc0de; stroke-width: 2; } /* Signal Blue */
+    .pin-label { font-size: 10px; fill: #555; }
+    .title { font-size: 20px; font-weight: bold; }
+  </style>
+
+  <!-- Title -->
+  <text x="20" y="30" class="title">RDWC Auto-Doser T4 - System Wiring Diagram v1.0</text>
+
+  <!-- POWER SUPPLY UNIT -->
+  <g transform="translate(50, 450)">
+    <rect x="0" y="0" width="120" height="80" class="power" />
+    <text x="60" y="30" text-anchor="middle" font-weight="bold">12V PSU</text>
+    <text x="60" y="50" text-anchor="middle">Main Power</text>
+    
+    <!-- Buck Converter -->
+    <g transform="translate(150, 10)">
+      <rect x="0" y="0" width="80" height="60" class="power" />
+      <text x="40" y="25" text-anchor="middle" font-size="10">Buck Conv.</text>
+      <text x="40" y="40" text-anchor="middle" font-size="10">12V -> 5V</text>
+    </g>
+    
+    <!-- Wires Power -->
+    <line x1="120" y1="30" x2="150" y2="30" class="wire-pwr" /> <!-- 12V to Buck -->
+    <line x1="120" y1="50" x2="150" y2="50" class="wire-gnd" /> <!-- GND to Buck -->
+  </g>
+
+  <!-- MAIN CONTROLLER (LILYGO T4) -->
+  <g transform="translate(300, 200)">
+    <rect x="0" y="0" width="200" height="180" class="esp" />
+    <text x="100" y="30" text-anchor="middle" font-weight="bold">LILYGO T4 v1.3</text>
+    <text x="100" y="50" text-anchor="middle">(ESP32 Display)</text>
+
+    <!-- Left Pins (Sensors) -->
+    <text x="10" y="80" class="pin-label">GPIO 34 (pH)</text>
+    <text x="10" y="100" class="pin-label">GPIO 35 (EC)</text>
+    <text x="10" y="120" class="pin-label">GPIO 25 (Temp)</text>
+    <text x="10" y="140" class="pin-label">GPIO 33 (Echo)</text>
+    <text x="10" y="160" class="pin-label">GPIO 26 (Trig)</text>
+
+    <!-- Right Pins (Relays) -->
+    <text x="190" y="80" text-anchor="end" class="pin-label">GPIO 16 (Relay 1)</text>
+    <text x="190" y="100" text-anchor="end" class="pin-label">GPIO 17 (Relay 2)</text>
+    <text x="190" y="120" text-anchor="end" class="pin-label">GPIO 19 (Relay 3)</text>
+    <text x="190" y="140" text-anchor="end" class="pin-label">GPIO 21 (Relay 4)</text>
+    
+    <!-- Power Pins -->
+    <text x="10" y="175" class="pin-label">5V / GND</text>
+  </g>
+
+  <!-- SENSORS (Left Side) -->
+  <g transform="translate(50, 100)">
+    <!-- pH -->
+    <rect x="0" y="0" width="100" height="50" class="sensor" />
+    <text x="50" y="30" text-anchor="middle">pH Sensor</text>
+    <line x1="100" y1="25" x2="300" y2="275" class="wire-sig" opacity="0.5" /> <!-- Simplified routing -->
+
+    <!-- EC -->
+    <rect x="0" y="70" width="100" height="50" class="sensor" />
+    <text x="50" y="100" text-anchor="middle">EC Sensor</text>
+
+    <!-- Temp -->
+    <rect x="0" y="140" width="100" height="50" class="sensor" />
+    <text x="50" y="170" text-anchor="middle">DS18B20 Temp</text>
+
+    <!-- Level -->
+    <rect x="0" y="210" width="100" height="50" class="sensor" />
+    <text x="50" y="240" text-anchor="middle">HC-SR04 Level</text>
+  </g>
+
+  <!-- RELAYS (Right Side) -->
+  <g transform="translate(600, 150)">
+    <rect x="0" y="0" width="120" height="200" class="relay" />
+    <text x="60" y="30" text-anchor="middle" font-weight="bold">4-CH Relay</text>
+    
+    <text x="60" y="60" text-anchor="middle">CH1: pH Down</text>
+    <text x="60" y="90" text-anchor="middle">CH2: pH Up</text>
+    <text x="60" y="120" text-anchor="middle">CH3: Nut A</text>
+    <text x="60" y="150" text-anchor="middle">CH4: Nut B</text>
+
+    <!-- Power for Pumps -->
+    <line x1="60" y1="200" x2="60" y2="450" class="wire-pwr" stroke-dasharray="5,5" />
+    <text x="65" y="420" font-size="10">12V to Pumps</text>
+  </g>
+
+  <!-- WIRING CONNECTIONS (Visual only) -->
+  <!-- 5V from Buck to ESP32 -->
+  <line x1="230" y1="460" x2="400" y2="460" class="wire-pwr" />
+  <line x1="400" y1="460" x2="400" y2="380" class="wire-pwr" />
+  
+  <!-- Connections Indicators -->
+  <circle cx="300" cy="275" r="3" fill="#5bc0de" /> <!-- Sensor Input Entry -->
+  <circle cx="500" cy="275" r="3" fill="#721c24" /> <!-- Relay Output Exit -->
+
+  <!-- Legend -->
+  <g transform="translate(600, 500)">
+    <rect x="0" y="0" width="150" height="80" fill="white" stroke="#ccc" />
+    <text x="10" y="20" font-weight="bold">Legend</text>
+    <line x1="10" y1="40" x2="40" y2="40" class="wire-pwr" /> <text x="50" y="45">Power (5V/12V)</text>
+    <line x1="10" y1="60" x2="40" y2="60" class="wire-sig" /> <text x="50" y="65">Signal</text>
+  </g>
+
+</svg>
