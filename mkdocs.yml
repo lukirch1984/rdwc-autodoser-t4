@@ -27,7 +27,7 @@ extra:
       link: ./ 
       lang: en
     - name: Deutsch
-      link: /de/
+      link: ./de/
       lang: de
 
 plugins:
