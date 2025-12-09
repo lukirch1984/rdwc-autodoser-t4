@@ -1,0 +1,50 @@
+site_name: RDWC Auto-Doser T4
+site_url: https://lukirch1984.github.io/rdwc-autodoser-t4/
+repo_url: https://github.com/lukirch1984/rdwc-autodoser-t4
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      accent: purple
+    - scheme: slate
+      primary: teal
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - content.code.copy
+
+# Internationalization
+extra:
+  alternate:
+    - name: English
+      link: /en/ 
+      lang: en
+    - name: Deutsch
+      link: /de/
+      lang: de
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix # index.md, index.de.md style is safer for simple setups, or folder based
+      languages:
+        - locale: en
+          name: English
+          build: true
+          default: true
+        - locale: de
+          name: Deutsch
+          build: true
+
+nav:
+  - Home: index.md
+  - Hardware:
+      - 'Wiring Guide': wiring.md

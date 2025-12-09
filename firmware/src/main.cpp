@@ -1,79 +1,64 @@
 #include <Arduino.h>
-#include <WebServer.h> // Ensure WebServer library is processed globally first
-#include "data_types.h" // Include common data types
-#include "config.h"
-#include "modules/DisplayUI.h"
-#include "modules/Sensors.h"
-#include "modules/Dosing.h"
-#include "modules/AppWebServer.h" // Include AppWebServer module header
+#include <Wire.h>
+#include <SPI.h>
 
-// Task Handles
-TaskHandle_t TaskSensorsHandle;
-TaskHandle_t TaskWiFiHandle;
-TaskHandle_t TaskUIHandle;
+// Drivers
+#include "drivers/RelayManager.h"
+#include "drivers/SensorManager.h"
+#include "ui/DisplayManager.h"
 
-// Task Functions
-void TaskSensorsCode(void * pvParameters);
-void TaskWiFiCode(void * pvParameters);
-void TaskUICode(void * pvParameters);
+// --- Configuration ---
+#define I2C_SDA 21
+#define I2C_SCL 22
+
+// Sensor Pins
+#define PIN_TEMP 25
+#define PIN_TRIG 26
+#define PIN_ECHO 39
+
+// --- Objects ---
+RelayManager relays(0x20); // PCF8574 Address
+SensorManager sensors(PIN_TEMP, PIN_TRIG, PIN_ECHO);
+DisplayManager display;
 
 void setup() {
-  Serial.begin(SERIAL_BAUD);
-  Serial.println("Starting RDWC Auto-Doser T4...");
+    Serial.begin(115200);
+    Serial.println("\n\nRDWC Auto-Doser T4 - Booting...");
 
-  // Init Hardware
-  pinMode(PIN_BUZZER, OUTPUT);
-  
-  // Create Tasks
-  // Core 1: Sensors & Control Logic (Real-time critical)
-  xTaskCreatePinnedToCore(
-    TaskSensorsCode,   "SensorsTask",   TASK_SENSOR_STACK_SIZE,   NULL,  1,  &TaskSensorsHandle,   1
-  );
+    // 1. Initialize I2C Bus
+    Wire.begin(I2C_SDA, I2C_SCL);
+    
+    // 2. Initialize UI
+    display.begin();
+    display.drawInterface();
+    display.showStatus("BOOTING...", TFT_YELLOW);
 
-  // Core 1: UI (Can share core with sensors, or move to 0 if heavy)
-  xTaskCreatePinnedToCore(
-    TaskUICode,        "UITask",        TASK_UI_STACK_SIZE,       NULL,  1,  &TaskUIHandle,        1
-  );
+    // 3. Initialize Relays
+    if (!relays.begin()) {
+        display.showStatus("RELAY ERR", TFT_RED);
+        Serial.println("ERROR: Relay (PCF8574) fail!");
+    } else {
+        Serial.println("OK: Relay Controller");
+    }
 
-  // Core 0: WiFi & WebServer (Network stack runs on Core 0)
-  xTaskCreatePinnedToCore(
-    TaskWiFiCode,      "WiFiTask",      TASK_WIFI_STACK_SIZE,     NULL,  1,  &TaskWiFiHandle,      0
-  );
+    // 4. Initialize Sensors
+    if (!sensors.begin()) {
+        display.showStatus("SENS ERR", TFT_ORANGE);
+        Serial.println("WARN: ADS1115 missing");
+    } else {
+        Serial.println("OK: Sensors");
+    }
+
+    display.showStatus("READY", TFT_GREEN);
 }
 
 void loop() {
-  // Main loop is empty as we use FreeRTOS tasks
-  vTaskDelete(NULL);
+    // 1. Update Sensors
+    sensors.update();
+    SensorData data = sensors.getData();
+
+    // 2. Update UI
+    display.updateSensorValues(data);
+
+    delay(200); // Higher refresh rate possible now due to optimized drawing
 }
-
-// --- Task Implementations ---
-
-void TaskSensorsCode(void * pvParameters) {
-  Sensors::init();
-  Dosing::init();
-  
-  for(;;) {
-    Sensors::update(); // Read pH, EC, Temp, Level
-    vTaskDelay(pdMS_TO_TICKS(1000)); // 1s Loop
-  }
-}
-
-void TaskUICode(void * pvParameters) {
-  DisplayUI::init();
-  
-  for(;;) {
-    DisplayUI::update(); // Refresh screen
-    vTaskDelay(pdMS_TO_TICKS(100)); // 10fps refresh
-  }
-}
-
-// Moved TaskWiFiCode definition after WebServer.h include
-void TaskWiFiCode(void * pvParameters) {
-  AppWebServer::init();
-  
-  for(;;) {
-    AppWebServer::handleClient();
-    vTaskDelay(pdMS_TO_TICKS(10)); // Allow other low prio tasks
-  }
-}
-
