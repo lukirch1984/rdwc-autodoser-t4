@@ -44,7 +44,22 @@ plugins:
           name: Deutsch
           build: true
 
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
 nav:
   - Home: index.md
   - Hardware:
       - 'Wiring Guide': wiring.md
+      - 'Bill of Materials': bom.md
+      - 'Sensor Setup': guide_ph_sensor.md
+      - 'Pump Setup': guide_relays_pumps.md
+  - Software:
+      - 'Usage Guide': usage.md
+      - 'Versioning': versioning.md
+  - Community:
+      - 'Contributing': contributing.md

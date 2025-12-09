@@ -1,41 +1,42 @@
 # RDWC Auto-Doser T4
 
-**Professional Open Source Hydroponic Controller for LILYGO T4 (ESP32)**
+**Open Source Hydroponic Controller for LILYGO T4 (ESP32)**
 
-![Status](https://img.shields.io/badge/Status-Development-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Stable-green)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Platform](https://img.shields.io/badge/Platform-ESP32-orange)
 
-The **RDWC Auto-Doser T4** is a fully automated dosing system for Recirculating Deep Water Culture (RDWC) hydroponics. It monitors pH, EC, water temperature, and water level, and automatically doses pH adjusters and nutrients to keep your system in the perfect range.
+The **RDWC Auto-Doser T4** is a professional-grade, DIY controller for Recirculating Deep Water Culture systems. It solves the pin limitation of the LILYGO T4 display board by utilizing an I2C-centric architecture for unlimited expansion.
 
-## 🌟 Features
-*   **Central Control:** Based on the powerful **LILYGO T4 v1.3** (ESP32 with 2.2" ILI9341 Display).
-*   **Real-time Monitoring:**
-    *   pH (Acid/Base)
-    *   EC (Electrical Conductivity / PPM)
-    *   Water Temperature (DS18B20)
-    *   Water Level (Ultrasonic HC-SR04)
-*   **Automated Dosing:** Controls 4 peristaltic pumps (pH Down, pH Up, Nutrient A, Nutrient B).
-*   **Dual Interface:**
-    *   **Local:** Color TFT Display.
-    *   **Remote:** Web Dashboard via WiFi.
-*   **Safety First:** Timeout logic to prevent over-dosing.
+## 📚 Documentation
+Full documentation is available in the `docs/` folder or via our [GitHub Pages site](https://lukirch1984.github.io/rdwc-autodoser-t4/).
 
-## 📂 Project Structure
-*   `docs/`: Documentation (Guides, BOM, etc.) - [English](docs/en/index.md) | [Deutsch](docs/de/index.md)
-*   `firmware/`: PlatformIO source code for the ESP32.
-*   `hardware/`: Schematics, 3D print files, and wiring diagrams.
+*   [**Wiring Guide**](docs/wiring.md): How to connect the I2C sensors and relays.
+*   [**Bill of Materials**](docs/bom.md): What to buy.
+*   [**Usage Guide**](docs/usage.md): How to operate and calibrate.
+*   [**Contributing**](docs/contributing.md): How to help.
+
+## ✨ Key Features
+*   **Precision Sensing:** Uses **ADS1115** (16-bit ADC) instead of noisy internal ESP32 ADCs for pH and EC.
+*   **Safe Switching:** Uses **PCF8574** I/O expander to drive relays, protecting the MCU.
+*   **Visual Dashboard:** 320x240 Color TFT display (ILI9341).
+*   **Remote Monitoring:** Integrated Web Server for WiFi access.
+*   **Robust Code:** Modular C++ architecture with separation of drivers, UI, and logic.
 
 ## 🚀 Quick Start
-1.  **Hardware:** Assemble the system according to the [Wiring Diagram](hardware/schematics/system_overview.svg).
+1.  **Hardware:** Assemble the system according to the [Wiring Diagram](docs/wiring.md).
 2.  **Firmware:**
-    *   Install [Visual Studio Code](https://code.visualstudio.com/) and the [PlatformIO](https://platformio.org/) extension.
-    *   Open the `firmware` folder.
-    *   Edit `src/modules/WebServer.cpp` to set your WiFi credentials.
-    *   Upload to your LILYGO T4 board.
-3.  **Usage:** Power on, calibrate sensors via the web interface, and let it grow!
+    *   Open `firmware` in VS Code (PlatformIO).
+    *   Edit `src/modules/AppWebServer.cpp` with your WiFi credentials.
+    *   Run `pio run --target upload`.
+3.  **Docs:** Run `mkdocs serve` to view the full manual locally.
 
-## ⚠️ Disclaimer
-This system handles water and electricity. Build carefully. Use a GFCI (RCD) outlet. The authors are not responsible for leaks, dead plants, or shocks.
+## ⚠️ Hardware Requirement
+This firmware **REQUIRES** an I2C bus with:
+*   **PCF8574** (Address 0x20) for Relays.
+*   **ADS1115** (Address 0x48) for Sensors.
 
-## 🤝 Contributing
-Contributions are welcome! Please see the [Issues](https://github.com/yourusername/rdwc-autodoser-t4/issues) tab.
+Direct GPIO connection of sensors is **NOT** supported due to pin conflicts on the T4 board.
+
+---
+*License: MIT. Created by the Community.*
