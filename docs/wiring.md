@@ -11,7 +11,7 @@ This guide details how to connect the LILYGO T4 to the external I2C modules.
 graph TD
     ESP32[LILYGO T4 ESP32]
     
-    subgraph I2C_Bus [I2C Bus (SDA:21, SCL:22)]
+    subgraph I2C_Bus [I2C Bus]
         ADS[ADS1115 ADC]
         PCF[PCF8574 Expander]
     end
