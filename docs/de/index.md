@@ -32,4 +32,4 @@ Der **RDWC Auto-Doser T4** ist ein hochpräziser Controller für Recirculating D
 
 ## Erste Schritte
 
-Schaue dir die [Verkabelungsanleitung](../wiring.md) an (Englisch), um Details zum Aufbau zu erfahren.
+Schaue dir die [Verkabelungsanleitung](wiring.md) an (Englisch), um Details zum Aufbau zu erfahren.

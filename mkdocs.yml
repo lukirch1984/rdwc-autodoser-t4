@@ -16,7 +16,6 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.instant
     - navigation.tracking
     - navigation.sections
     - content.code.copy
@@ -34,7 +33,7 @@ extra:
 plugins:
   - search
   - i18n:
-      docs_structure: suffix # index.md, index.de.md style is safer for simple setups, or folder based
+      docs_structure: folder
       languages:
         - locale: en
           name: English
