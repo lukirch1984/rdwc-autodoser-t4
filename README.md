@@ -15,19 +15,23 @@ Full documentation is available in the `docs/` folder or via our [GitHub Pages s
 *   [**Bill of Materials**](docs/bom.md): What to buy.
 *   [**Usage Guide**](docs/usage.md): How to operate and calibrate.
 *   [**Contributing**](docs/contributing.md): How to help.
+*   [**Development Log**](DEVELOPMENT_LOG.md): Track the evolution of the project.
 
 ## ✨ Key Features
-*   **Precision Sensing:** Uses **ADS1115** (16-bit ADC) instead of noisy internal ESP32 ADCs for pH and EC.
+*   **Precision Sensing:** Uses **ADS1115** (16-bit ADC) for lab-grade pH and EC with **Automatic Temperature Compensation (ATC)**.
+*   **Safety & Reliability:** Implements **Fail-Safe** mechanisms (plausibility checks, dose timeouts, cooldowns) to protect your plants.
+*   **Usability:** Calibration values and dosing targets are **persistently stored** in Flash memory (NVS).
+*   **Data Logging:** Logs sensor data to **SD Card** every 5 minutes for long-term analysis.
+*   **IoT Ready:** Sends live sensor data via **MQTT** to a broker (e.g., Home Assistant).
 *   **Safe Switching:** Uses **PCF8574** I/O expander to drive relays, protecting the MCU.
 *   **Visual Dashboard:** 320x240 Color TFT display (ILI9341).
-*   **Remote Monitoring:** Integrated Web Server for WiFi access.
-*   **Robust Code:** Modular C++ architecture with separation of drivers, UI, and logic.
+*   **Remote Monitoring:** (Planned for future releases, currently MQTT is prioritized)
 
 ## 🚀 Quick Start
-1.  **Hardware:** Assemble the system according to the [Wiring Diagram](docs/wiring.md).
+1.  **Hardware:** Assemble the system according to the [Wiring Guide](docs/wiring.md).
 2.  **Firmware:**
     *   Open `firmware` in VS Code (PlatformIO).
-    *   Edit `src/modules/AppWebServer.cpp` with your WiFi credentials.
+    *   Edit `src/drivers/NetworkManager.h` with your WiFi and MQTT credentials.
     *   Run `pio run --target upload`.
 3.  **Docs:** Run `mkdocs serve` to view the full manual locally.
 

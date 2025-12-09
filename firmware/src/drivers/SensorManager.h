@@ -29,15 +29,22 @@ private:
     uint8_t _echoPin;
 
     // Calibration constants (Defaults)
-    const float VOLTAGE_REF = 5.0; // ADS1115 typically powered by 5V in these setups, or 3.3V. Check VDD!
-    // Using 5V for dynamic range is common with 5V sensors.
+    const float VOLTAGE_REF = 5.0; 
+    
+    // Dynamic Calibration
+    float _phMidpoint = 2.50;
+    float _phSlope = 0.18;
+    float _ecKFactor = 1.0;
     
     float readADSVoltage(uint8_t channel);
 
 public:
     SensorManager(uint8_t tempPin, uint8_t trigPin, uint8_t echoPin);
     bool begin();
-    void update(); // Call this in loop to refresh readings
+    void update(); 
+    
+    // Inject Calibration
+    void setCalibration(float phMid, float phSlope, float ecK);
     
     SensorData getData();
 };

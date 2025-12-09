@@ -55,7 +55,17 @@ void SensorManager::update() {
     // --- 1. Temperature ---
     _sensors->requestTemperatures();
     float t = _sensors->getTempCByIndex(0);
-    if (t > -127.0) _currentData.temp = t;
+    // Error handling: if disconnected (-127), assume 25C for safety calculations
+    if (t > -100.0) {
+        _currentData.temp = t;
+    } else {
+        t = 25.0; // Fallback for ATC
+    }
+
+    // --- ATC Calculation ---
+    // Nernst equation correction factor relative to 25°C (298.15K)
+    float tempKelvin = t + 273.15;
+    float tempCorrection = tempKelvin / 298.15;
 
     // --- 2. Ultrasonic Level ---
     digitalWrite(_trigPin, LOW);
@@ -74,15 +84,26 @@ void SensorManager::update() {
 
     // --- 3. pH (ADS Channel 0) ---
     float phVolt = readADSVoltage(0);
-    // Generic Linear: pH 7.0 @ 2.5V (Adjust as needed)
-    // Formula: pH = 7 + ((2.5 - Voltage) / Slope)
-    // Let's assume a slope of 0.18V per pH unit
-    _currentData.ph = 7.0 + ((2.5 - phVolt) / 0.18);
+    
+    // pH Logic with ATC
+    // Use stored calibration values
+    float baseSlope = _phSlope; 
+    float adjustedSlope = baseSlope * tempCorrection;
+
+    _currentData.ph = 7.0 + ((_phMidpoint - phVolt) / adjustedSlope);
 
     // --- 4. EC (ADS Channel 1) ---
     float ecVolt = readADSVoltage(1);
-    // Simple placeholder logic: 1V = 1.0 mS/cm
-    _currentData.ec = ecVolt * 1.0; 
+    
+    // EC Logic
+    float ecRaw = ecVolt * _ecKFactor; // Use stored K-Factor
+    _currentData.ec = ecRaw / (1.0 + 0.02 * (t - 25.0));
+}
+
+void SensorManager::setCalibration(float phMid, float phSlope, float ecK) {
+    _phMidpoint = phMid;
+    _phSlope = phSlope;
+    _ecKFactor = ecK;
 }
 
 SensorData SensorManager::getData() {

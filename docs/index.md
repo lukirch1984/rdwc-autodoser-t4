@@ -15,8 +15,11 @@ The **RDWC Auto-Doser T4** is a high-precision controller designed for Recircula
 
 ## Key Features
 
-*   **Precise Monitoring:** 16-bit ADC (ADS1115) for lab-grade pH and EC readings.
-*   **Safety First:** Relays are decoupled via I2C to prevent GPIO burnout.
+*   **Precision Sensing:** Uses **ADS1115** (16-bit ADC) for lab-grade pH and EC with **Automatic Temperature Compensation (ATC)**.
+*   **Safety & Reliability:** Implements **Fail-Safe** mechanisms (plausibility checks, dose timeouts, cooldowns) to protect your plants.
+*   **Usability:** Calibration values and dosing targets are **persistently stored** in Flash memory (NVS).
+*   **Data Logging:** Logs sensor data to **SD Card** every 5 minutes for long-term analysis.
+*   **IoT Ready:** Sends live sensor data via **MQTT** to a broker (e.g., Home Assistant).
 *   **Visual Interface:** Clean 320x240 UI with real-time updates and flicker-free rendering.
 *   **Modular Code:** Separation of concerns (Drivers vs. UI vs. Logic).
 
